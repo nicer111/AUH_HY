@@ -1,0 +1,6 @@
+AUH/va500pnode:
+  ros__parameters:
+    usart: "/dev/ttyAMA0"
+    topic: "depth"
+    gettopic: "depthcommand"
+    bote: 115200

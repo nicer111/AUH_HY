@@ -1,0 +1,6 @@
+AUH/batterynode:
+  ros__parameters:
+    usart: "/dev/ttyAMA1"
+    topic: "battery"
+    gettopic: "batterycommand"
+    bote: 115200

@@ -1,0 +1,6 @@
+AUH/loranode:
+  ros__parameters:
+    usart: "/dev/ttyUSB0"
+    topic: "loramessage"
+    gettopic: "loracommand"
+    bote: 115200

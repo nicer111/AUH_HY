@@ -1,0 +1,21 @@
+record_all: false
+topics_to_record:
+  "/AUH/loramessage": true
+  "/AUH/topic_brightness": true
+  "/AUH/camera1/image_raw": true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

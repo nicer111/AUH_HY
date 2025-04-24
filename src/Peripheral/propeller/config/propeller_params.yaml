@@ -1,0 +1,9 @@
+AUH/propellernode:
+  ros__parameters:
+    left_p: 0x34E                #水平左推进器
+    right_p: 0x34D               #水平右推进器
+    front_l_p: 0x356              #垂直左前推进器
+    front_r_p: 0x357              #垂直右前推进器
+    behind_l_p: 0x358             #垂直左后推进器
+    behind_r_p: 0x359             #垂直右后推进器
+    cannum: "can0"                #can的编号

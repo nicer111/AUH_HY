@@ -1,0 +1,9 @@
+nodemanage:
+  ros__parameters:
+    node_to_manage:
+      - loranode
+      - va500pnode
+      - batterynode
+      - lightnode
+      - camera1
+      - testnode

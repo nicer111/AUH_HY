@@ -1,0 +1,34 @@
+rosbag2_bagfile_information:
+  version: 9
+  storage_identifier: mcap
+  duration:
+    nanoseconds: 611963205091
+  starting_time:
+    nanoseconds_since_epoch: 1744962444471340470
+  message_count: 6
+  topics_with_message_count:
+    - topic_metadata:
+        name: /AUH/topic_brightness
+        type: std_msgs/msg/UInt8
+        serialization_format: cdr
+        offered_qos_profiles:
+          []
+        type_description_hash: ""
+      message_count: 6
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - 20250418154708_bag_0.mcap
+  files:
+    - path: 20250418154708_bag_0.mcap
+      starting_time:
+        nanoseconds_since_epoch: 1744962444471340470
+      duration:
+        nanoseconds: 611963205091
+      message_count: 6
+  custom_data:
+    mcap.sync_interval: 0
+    mcap.crc: true
+    mcap.compression: Zstd
+    mcap.chunk_size: 5242880
+  ros_distro: rolling
