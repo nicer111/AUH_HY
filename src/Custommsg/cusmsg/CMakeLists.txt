@@ -15,7 +15,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "msg/battery/POWERSTATUS.msg"
         "msg/can/CANDLC8.msg"
         "msg/propeller/PSTATUS.msg"
-        "msg/propeller/PROPELLERSET.msg"
+        "msg/propeller/PROPELLERDEFINE.msg"
+        "msg/propeller/PROPELLERSTRUCT.msg"
 )
 
 if(BUILD_TESTING)
