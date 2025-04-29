@@ -6,58 +6,49 @@ PropellerNode::PropellerNode()
 {
     getParams();
     setupCanInterface(Cannum_);
-    statuspub_ = this->create_publisher<PSTATUS>("PropellerStatus", 10);
+    pstatuspub_ = this->create_publisher<PSTATUS>("PropellerStatus", 10);
     pstructsub_ = this->create_subscription<PSTRUCT>("Propellerctl", 10,
                                std::bind(&PropellerNode::ctl_callback, this, _1));
     receiver_thread_ = std::thread(&PropellerNode::canReceiver, this);
-    timerstatus_ = this->create_wall_timer(
-            std::chrono::milliseconds(500),  // 控制读取推进器状态的周期时间
-            std::bind(&PropellerNode::statusLoop, this)
-    );
 }
 
-void PropellerNode::statusLoop()
-{
-
-}
 
 void PropellerNode::getParams()
 {
-    if (!this->has_parameter("left_p"))
-        this->declare_parameter<std::uint16_t>("left_p", 0x34E);
-    else
-        this->get_parameter("left_p", Propeller_address_[PROPELLERDEFINE::LEFT]);
+    uint16_t temp;
+    this->declare_parameter<std::uint16_t>("left_p", 0x34E);
+    this->get_parameter("left_p", temp);
+    Propeller_address_.insert(std::make_pair(temp, PROPELLERDEFINE::LEFT));
 
-    if (!this->has_parameter("right_p"))
-        this->declare_parameter<std::uint16_t>("right_p", 0x34D);
-    else
-        this->get_parameter("right_p", Propeller_address_[PROPELLERDEFINE::RIGHT]);
+    this->declare_parameter<std::uint16_t>("right_p", 0x34D);
+    this->get_parameter("right_p", temp);
+    Propeller_address_.insert(std::make_pair(temp, PROPELLERDEFINE::RIGHT));
 
-    if (!this->has_parameter("front_l_p"))
-        this->declare_parameter<std::uint16_t>("front_l_p", 0x356);
-    else
-        this->get_parameter("front_l_p", Propeller_address_[PROPELLERDEFINE::FL]);
+    this->declare_parameter<std::uint16_t>("front_l_p", 0x356);
+    this->get_parameter("front_l_p", temp);
+    Propeller_address_.insert(std::make_pair(temp, PROPELLERDEFINE::FL));
 
-    if (!this->has_parameter("front_r_p"))
-        this->declare_parameter<std::uint16_t>("front_r_p", 0x357);
-    else
-        this->get_parameter("front_r_p", Propeller_address_[PROPELLERDEFINE::FR]);
+    this->declare_parameter<std::uint16_t>("front_r_p", 0x357);
+    this->get_parameter("front_r_p", temp);
+    Propeller_address_.insert(std::make_pair(temp, PROPELLERDEFINE::FR));
 
-    if (!this->has_parameter("behind_l_p"))
-        this->declare_parameter<std::uint16_t>("behind_l_p", 0x358);
-    else
-        this->get_parameter("behind_l_p", Propeller_address_[PROPELLERDEFINE::BL]);
+    this->declare_parameter<std::uint16_t>("behind_l_p", 0x358);
+    this->get_parameter("behind_l_p", temp);
+    Propeller_address_.insert(std::make_pair(temp, PROPELLERDEFINE::BL));
 
-    if (!this->has_parameter("behind_r_p"))
-        this->declare_parameter<std::uint16_t>("behind_r_p", 0x359);
-    else
-        this->get_parameter("behind_r_p", Propeller_address_[PROPELLERDEFINE::BR]);
+    this->declare_parameter<std::uint16_t>("behind_r_p", 0x359);
+    this->get_parameter("behind_r_p", temp);
+    Propeller_address_.insert(std::make_pair(temp, PROPELLERDEFINE::BR));
 
 
-    if (!this->has_parameter("cannum"))
-        this->declare_parameter<std::string>("cannum", "can0");
-    else
-        this->get_parameter("cannum", Cannum_);
+    this->declare_parameter<std::string>("cannum", "can0");
+    this->get_parameter("cannum", Cannum_);
+
+    for (const auto& pair : Propeller_address_) {
+        Propeller_address_[pair.second] = pair.first;
+    }
+    //RCLCPP_INFO(this->get_logger(), "%x %x %x %x %x %x",Propeller_address_[0x34E],Propeller_address_[0x34D],Propeller_address_[0x356],Propeller_address_[0x357],Propeller_address_[0x358],Propeller_address_[0x359]);
+    //RCLCPP_INFO(this->get_logger(), "%x %x %x %x %x %x",Propeller_address_[0],Propeller_address_[1],Propeller_address_[2],Propeller_address_[3],Propeller_address_[4],Propeller_address_[5]);
 }
 
 void PropellerNode::setupCanInterface(const std::string &interface_name)
@@ -103,16 +94,7 @@ void PropellerNode::canReceiver()
         else if (nbytes == sizeof(struct can_frame))
         {
             // 处理接收到的CAN帧
-            //handleFrame(frame);
-            auto data = CANDLC8();
-            data.index = frame.can_id;
-            data.dlc = static_cast<uint8_t>(frame.can_dlc);
-            for (int i = 0; i < frame.can_dlc; i++) {
-                data.data[i] = frame.data[i];
-                //std::cout << std::hex << static_cast<int>(frame.data[i]) << " ";
-            }
-            //std::cout << std::endl;
-            //publisher1_->publish(data);
+            message_deal(frame);
         }
     }
 }
@@ -154,74 +136,40 @@ void PropellerNode::frame_set(struct can_frame & frame,const uint16_t index,cons
 
 void PropellerNode::message_deal(struct can_frame &frame)
 {
+    PSTATUS p_status;
     uint16_t command =0x0000;
     uint8_t i = 0;
     uint16_t index = frame.can_id + 128;
-    /*if((msg.index+128) < 0x340)
-    {
-        return;
-    }*/
-    //RCLCPP_INFO(this->get_logger(), "ssss: %X",index);
-    switch(index)
-    {
-        case Propeller_address_[msg.index]:
-            i = 0;
-            break;
-        case V2_P:
-            i = 1;
-            break;
-        case V3_P:
-            i = 2;
-            break;
-        case V4_P:
-            i = 3;
-            break;
-        case Left_P:
-            i = 4;
-            break;
-        case Right_P:
-            i = 5;
-            break;
-        default:
-            break;
-    }
-    command = (((uint16_t)msg.data[0]) << 8) + msg.data[1];
+    command = (((uint16_t)frame.data[0]) << 8) + frame.data[1];
     //RCLCPP_INFO(this->get_logger(), "dddd: %X %u %u",command,msg.data[0],msg.data[1]);
     switch(command)
     {
-        case C_Speed:
-
-            //p_status.speed[i] = msg.data[4] << 24 + msg.data[5] << 16 + msg.data[6] << 8 + msg.data[7];
-            p_status.speed[i] = (int)((msg.data[4] << 24) | (msg.data[5] << 16) | (msg.data[6] << 8) | msg.data[7]);
-            //p_status.speed[i] = (((int16_t)msg.data[6]) << 8) + msg.data[7];
-            publisher1_->publish(p_status);
+        case GetSpeed_C_:
+            p_status.speed[Propeller_address_[index]] = (int)((frame.data[4] << 24) | (frame.data[5] << 16) | (frame.data[6] << 8) | frame.data[7]);
+            pstatuspub_->publish(p_status);
             //RCLCPP_INFO(this->get_logger(), "C_Speed: %u %u %u %u",msg.data[4],msg.data[5],msg.data[6],msg.data[7]);
             //RCLCPP_INFO(this->get_logger(), "C_Speed: %d",p_status.speed[i]);
             break;
-        case C_Current:
-            p_status.current[i] = ((float)((msg.data[4] << 24) | (msg.data[5] << 16) | (msg.data[6] << 8) | (msg.data[7])))/10.0;
-            //p_status.current[i] = ((float)(((int32_t)msg.data[6] << 8) + msg.data[7]))/10.0 ;
-            publisher1_->publish(p_status);
-            //RCLCPP_INFO(this->get_logger(), "C_Current: %f",p_status.current[i]);
+        case GetCurrent_C_:
+            p_status.current[i] = ((float)((frame.data[4] << 24) | (frame.data[5] << 16) | (frame.data[6] << 8) | (frame.data[7])))/10.0;
+            pstatuspub_->publish(p_status);
+            RCLCPP_INFO(this->get_logger(), "C_Current: %f",p_status.current[Propeller_address_[index]]);
             break;
-            /*case C_Vol:
-                p_status.vol[i] = ((float)(((int16_t)msg.data[6] << 8) + msg.data[7]))/10.0 ;
-                //RCLCPP_INFO(this->get_logger(), "C_Vol: %f",p_status.vol[i]);
-                break;*/
-        case C_Mtemp:
-            p_status.motortemp[i] = (int32_t)msg.data[7];
-            publisher1_->publish(p_status);
+        case GetTempM_C_:
+            p_status.motortemp[i] = (int32_t)frame.data[7];
+            pstatuspub_->publish(p_status);
             //RCLCPP_INFO(this->get_logger(), "C_Mtemp: %d",p_status.motortemp[i]);
             break;
-        case C_Dtemp:
-            p_status.drivertemp[i] = (int32_t)msg.data[7];
-            publisher1_->publish(p_status);
+        case GetTempE_C_:
+            p_status.drivertemp[i] = (int32_t)frame.data[7];
+            pstatuspub_->publish(p_status);
             //RCLCPP_INFO(this->get_logger(), "C_Dtemp: %d",p_status.drivertemp[i]);
             break;
     }
 
     //RCLCPP_INFO(this->get_logger(), "command = %X %X %X %X %X %X %X %X %X",command,msg.data[0],msg.data[1],msg.data[2],msg.data[3],msg.data[4],msg.data[5],msg.data[6],msg.data[7]);
 }
+
 
 int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);

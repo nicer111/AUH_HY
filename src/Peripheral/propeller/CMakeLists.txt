@@ -24,7 +24,7 @@ ament_target_dependencies(
   "std_msgs"
   "cusmsg"
 )
-
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY config/ DESTINATION ${CONFIG_DIR})
 install(
         DIRECTORY ${CONFIG_DIR} # 顶层配置目录
