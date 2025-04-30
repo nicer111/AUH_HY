@@ -44,6 +44,7 @@ void PropellerNode::getParams()
     this->declare_parameter<std::string>("cannum", "can0");
     this->get_parameter("cannum", Cannum_);
 
+    //重新把推进器地址和编号放到map里，方便索引和访问
     for (const auto& pair : Propeller_address_) {
         Propeller_address_[pair.second] = pair.first;
     }

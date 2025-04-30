@@ -1,0 +1,4 @@
+AUH/navinode:
+  ros__parameters:
+    usart: "/dev/ttyAMA2"
+    bote: 115200
