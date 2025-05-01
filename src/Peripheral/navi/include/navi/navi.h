@@ -8,28 +8,28 @@
 #include "std_msgs/msg/float64.hpp"
 #include "serial.h"
 #include <sensor_msgs/msg/imu.hpp>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include "geometry_msgs/msg/twist_stamped.hpp"
 #include <geometry_msgs/msg/vector3_stamped.hpp>
-#include <tf2_ros/transform_listener.h>
-#include <tf2_ros/buffer.h>
 #include <geometry_msgs/msg/transform_stamped.hpp>
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2/LinearMath/Matrix3x3.h>
 #include <vector>
 #include <sstream>
 #include <string>
 #include <Eigen/Dense>
 #include <cmath>
+#include "cusmsg/msg/ghfpd.hpp"
 
 using namespace serial;
+using  GHFPD = cusmsg::msg::GHFPD;
 
 class NaviNode : public rclcpp::Node {
 public:
     NaviNode();
 private:
-    void usartReceiver();                       //接收线程函数
-
+    void usartReceiver();                                        //接收线程函数
+    bool xorChecksum(const std::string& data,uint8_t check);                //校验计算函数
+    void message_Deal(std::string & msg);                        //数据处理
+    void Eulerto_orientation(GHFPD & data);
+    std::vector<std::string> v;
     double yaw_;
     double pitch_;
     double roll_;
@@ -37,7 +37,7 @@ private:
     std::int32_t usartbote_;
     std::thread receiver_thread_;
     Serial *my_serial_;
-    int a = 0;
+    GHFPD navidata_;                                             //导航相关的数据
 
     const double WGS84_WIE = 7.2921151467e-5; // Earth rotation rate (rad/s)
     const double WGS84_F = 0.0033528106647474805; // Flattening

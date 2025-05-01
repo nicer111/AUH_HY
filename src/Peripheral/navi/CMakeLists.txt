@@ -5,9 +5,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../config/${PROJECT_NAME}/)
 set(SERIAL_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Third/serial)
+set(CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../config/${PROJECT_NAME}/)
 file(GLOB SERIAL_SOURCES
         ${SERIAL_ROOT_DIR}/src/*.cc
         ${SERIAL_ROOT_DIR}/src/impl/*.cc
@@ -31,9 +30,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-
-ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
+find_package(cusmsg REQUIRED)
 
 add_executable(navi src/navi.cpp)
 target_link_libraries(navi
@@ -52,6 +49,7 @@ ament_target_dependencies(
   "sensor_msgs"
   "tf2"
   "tf2_geometry_msgs"
+  "cusmsg"
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
@@ -63,7 +61,7 @@ install(
 )
 
 install(TARGETS navi
-        DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

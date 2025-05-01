@@ -17,6 +17,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "msg/propeller/PSTATUS.msg"
         "msg/propeller/PROPELLERDEFINE.msg"
         "msg/propeller/PROPELLERSTRUCT.msg"
+        "msg/navi/GHFPD.msg"
 )
 
 if(BUILD_TESTING)
