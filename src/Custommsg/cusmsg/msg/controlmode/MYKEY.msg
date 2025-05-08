@@ -1,0 +1,8 @@
+int32 key_w
+int32 key_a
+int32 key_s
+int32 key_d
+int32 key_i
+int32 key_j
+int32 key_k
+int32 key_l

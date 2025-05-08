@@ -81,6 +81,33 @@ def generate_launch_description():
             )
         )
     )
+    navi_launch = IncludeLaunchDescription(
+        launch_description_source=AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('navi'),
+                'launch',
+                'navi_launch.py'
+            )
+        )
+    )
+    tfbroadcaster_launch = IncludeLaunchDescription(
+        launch_description_source=AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('tfbroadcaster'),
+                'launch',
+                'tfbroadcaster_launch.py'
+            )
+        )
+    )
+    controlmode_launch = IncludeLaunchDescription(
+        launch_description_source=AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('controlmode'),
+                'launch',
+                'controlmode_launch.py'
+            )
+        )
+    )
     foxglove_bridge_launch = IncludeLaunchDescription(
         launch_description_source=AnyLaunchDescriptionSource(
             os.path.join(
@@ -90,4 +117,4 @@ def generate_launch_description():
             )
         )
     )
-    return LaunchDescription([lora_launch,va500p_launch,light_launch,battery_launch,usbcam_launch,foxglove_bridge_launch,oculus_launch,nodemanage_launch,bagrecorder_launch])
+    return LaunchDescription([lora_launch,va500p_launch,light_launch,battery_launch,usbcam_launch,foxglove_bridge_launch,oculus_launch,nodemanage_launch,bagrecorder_launch,navi_launch,tfbroadcaster_launch,controlmode_launch])

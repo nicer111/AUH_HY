@@ -27,15 +27,6 @@ def generate_launch_description():
             )
         )
     )
-    propeller_launch = IncludeLaunchDescription(
-        launch_description_source= PythonLaunchDescriptionSource(
-            launch_file_path=os.path.join(
-                get_package_share_directory("propeller"),
-                "launch",
-                "propeller_launch.py"
-            )
-        )
-    )
     light_launch = IncludeLaunchDescription(
         launch_description_source= PythonLaunchDescriptionSource(
             launch_file_path=os.path.join(
@@ -72,6 +63,15 @@ def generate_launch_description():
             )
         )
     )
+    bagrecorder_launch = IncludeLaunchDescription(
+        launch_description_source= PythonLaunchDescriptionSource(
+            launch_file_path=os.path.join(
+                get_package_share_directory("bagrecorder"),
+                "launch",
+                "bagrecorder_launch.py"
+            )
+        )
+    )
     navi_launch = IncludeLaunchDescription(
         launch_description_source=AnyLaunchDescriptionSource(
             os.path.join(
@@ -99,14 +99,13 @@ def generate_launch_description():
             )
         )
     )
-    bagrecorder_launch = IncludeLaunchDescription(
-        launch_description_source= PythonLaunchDescriptionSource(
-            launch_file_path=os.path.join(
-                get_package_share_directory("bagrecorder"),
-                "launch",
-                "bagrecorder_launch.py"
+    foxglove_bridge_launch = IncludeLaunchDescription(
+        launch_description_source=AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('foxglove_bridge'),
+                'launch',
+                'foxglove_bridge_launch.xml'
             )
         )
     )
-
-    return LaunchDescription([lora_launch,va500p_launch,propeller_launch,light_launch,battery_launch,usbcam_launch,nodemanage_launch,navi_launch,tfbroadcaster_launch,controlmode_launch,bagrecorder_launch])
+    return LaunchDescription([lora_launch,va500p_launch,light_launch,battery_launch,usbcam_launch,foxglove_bridge_launch,nodemanage_launch,bagrecorder_launch,navi_launch,tfbroadcaster_launch,controlmode_launch])

@@ -18,6 +18,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         "msg/propeller/PROPELLERDEFINE.msg"
         "msg/propeller/PROPELLERSTRUCT.msg"
         "msg/navi/GHFPD.msg"
+        "msg/navi/COORDINATE.msg"
+        "msg/controlmode/MYKEY.msg"
 )
 
 if(BUILD_TESTING)

@@ -28,7 +28,8 @@ private:
     void usartReceiver();                                        //接收线程函数
     bool xorChecksum(const std::string& data,uint8_t check);                //校验计算函数
     void message_Deal(std::string & msg);                        //数据处理
-    void Eulerto_orientation(GHFPD & data);
+    void Coordinate_conversion(GHFPD & data);                      //坐标系转换
+    Eigen::Vector3d blh2ned(Eigen::Vector3d& origin_blh, Eigen::Vector3d& target_blh);
     std::vector<std::string> v;
     double yaw_;
     double pitch_;
@@ -45,6 +46,9 @@ private:
     const double WGS84_RB = 6356752.3142451793; // Semi-minor axis (meters)
     const double WGS84_GM0 = 398600441800000.00; // Gravitational constant
     const double WGS84_E1 = 0.0066943799901413156; // First eccentricity squared
+
+
+    rclcpp::Publisher<GHFPD>::SharedPtr ghfpdpub_;
 
 
 };

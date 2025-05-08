@@ -15,6 +15,7 @@ NaviNode::NaviNode() : Node("navinode")
     } else {
         RCLCPP_ERROR(this->get_logger(), "%s open is error", usartport_.c_str());
     }
+    ghfpdpub_ = this->create_publisher<GHFPD>("GHFPD", 10);
 }
 
 void NaviNode::usartReceiver()
@@ -92,6 +93,7 @@ void NaviNode::message_Deal(std::string & msg)
                 navidata_.vd = std::stof(v.at(11));
                 navidata_.dvlbaseline = std::stof(v.at(12));
                 navidata_.status = v.at(15).substr(0, 2);
+                ghfpdpub_->publish(navidata_);
                 //std::string temp = v.at(15).substr(3, 5);
             } catch (const std::exception& e) {
                 RCLCPP_ERROR(this->get_logger(), "Error parsing values: %s", e.what());
@@ -101,42 +103,48 @@ void NaviNode::message_Deal(std::string & msg)
     }
 }
 
-void NaviNode::Eulerto_orientation(GHFPD & data)
+void NaviNode::Coordinate_conversion(GHFPD & data)
 {
-    /*speed_ = std::sqrt(vn_temp * vn_temp + ve_temp * ve_temp + vd_temp * vd_temp);
-    //imu_msg.linear_acceleration.x = latitude_temp;
-    //imu_msg.linear_acceleration.y = longitude_temp;
-    imu_msg.linear_acceleration.z = speed_;
-    //imu_msg.linear_acceleration.x = std::stod(status_);  //这个取消了换了一个单独的话题
-    status_msg.data = std::stod(status_);
-    publisher3_->publish(status_msg);
-    publisher1_->publish(imu_msg);
+    //status_msg.data = std::stod(status_);
+    //publisher3_->publish(status_msg);
+    //publisher1_->publish(imu_msg);
     Eigen::Vector3d origin_blh(29.99837285, 122.16037559, 18.353); // Latitude, Longitude, Height
     //RCLCPP_INFO(this->get_logger(), "latitude: %.10f longitude: %.10f", latitude_temp,longitude_temp);
-    Eigen::Vector3d target_blh(latitude_temp, longitude_temp, 18.353);
+    Eigen::Vector3d target_blh(data.altitude, data.longitude, data.altitude);
     Eigen::Vector3d ned = blh2ned(origin_blh, target_blh);
 
-    auto message = std_msgs::msg::Float64MultiArray();
-    message.data = {ned[0],ned[1],ned[2],vn_temp,ve_temp};
-    publisher2_->publish(message);
+}
 
-    Eigen::Matrix3d C_n_b; // NED到载体坐标系的转换矩阵
-    C_n_b <<
-          std::cos(pitch) * std::cos(yaw),  std::cos(pitch) * std::sin(yaw), -std::sin(pitch),
-            std::sin(roll) * std::sin(pitch) * std::cos(yaw) - std::cos(roll) * std::sin(yaw),  std::sin(roll) * std::sin(pitch) * std::sin(yaw) + std::cos(roll) * std::cos(yaw), std::sin(roll) * std::cos(pitch),
-            std::cos(roll) * std::sin(pitch) * std::cos(yaw) + std::sin(roll) * std::sin(yaw),  std::cos(roll) * std::sin(pitch) * std::sin(yaw) - std::sin(roll) * std::cos(yaw), std::cos(roll) * std::cos(pitch);
+Eigen::Vector3d NaviNode::blh2ned(Eigen::Vector3d& origin_blh, Eigen::Vector3d& target_blh)
+{
+    double lat0 = origin_blh[0] * M_PI / 180.0;
+    double lon0 = origin_blh[1] * M_PI / 180.0;
+    double h0 = origin_blh[2];
 
-    Eigen::Vector3d velocity_ned(vn_temp, ve_temp, vd_temp);
-    Eigen::Vector3d velocity_body = C_n_b * velocity_ned;  // 将速度从NED转换到载体坐标系
+    double lat = target_blh[0] * M_PI / 180.0;
+    double lon = target_blh[1] * M_PI / 180.0;
+    double h = target_blh[2];
 
-    // 发布DVL的TwistStamped消息
-    geometry_msgs::msg::TwistStamped twist_msg;
-    twist_msg.header.stamp = this->get_clock()->now();
-    twist_msg.header.frame_id = "base_link";
-    twist_msg.twist.linear.x = velocity_body.x();
-    twist_msg.twist.linear.y = velocity_body.y();
-    twist_msg.twist.linear.z = velocity_body.z();
-    dvl_twist_publisher_->publish(twist_msg);*/
+    double tmp = std::sin(lat0) * std::sin(lat0);
+    tmp = 1.0 - WGS84_E1 * tmp;
+    double sqrttmp = std::sqrt(tmp);
+    double rm = WGS84_RA * (1.0 - WGS84_E1) / (sqrttmp * tmp);
+    double rn = WGS84_RA / sqrttmp;
+
+    Eigen::Matrix<double, 3, 3> dr;
+    dr.setZero();
+    dr(0, 0) = rn + h0;
+    dr(1, 1) = (rm + h0) * std::cos(lat0);
+    dr(2, 2) = -1.0;
+
+    Eigen::Vector3d dpos = target_blh - origin_blh;
+    Eigen::Vector3d dpos_rad;
+    dpos_rad << dpos[0] * M_PI / 180.0, dpos[1] * M_PI / 180.0, dpos[2];
+
+    Eigen::Vector3d ned = dr * dpos_rad;
+    ned[2] = -ned[2];
+
+    return ned;
 }
 
 bool NaviNode::xorChecksum(const std::string& data,uint8_t check)

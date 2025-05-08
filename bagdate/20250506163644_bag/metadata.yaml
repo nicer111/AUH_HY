@@ -1,0 +1,27 @@
+rosbag2_bagfile_information:
+  version: 9
+  storage_identifier: mcap
+  duration:
+    nanoseconds: 0
+  starting_time:
+    nanoseconds_since_epoch: 9223372036854775807
+  message_count: 0
+  topics_with_message_count:
+    []
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - 20250506163644_bag_0.mcap
+  files:
+    - path: 20250506163644_bag_0.mcap
+      starting_time:
+        nanoseconds_since_epoch: 9223372036854775807
+      duration:
+        nanoseconds: 0
+      message_count: 0
+  custom_data:
+    mcap.sync_interval: 0
+    mcap.crc: true
+    mcap.compression: Zstd
+    mcap.chunk_size: 5242880
+  ros_distro: rolling
