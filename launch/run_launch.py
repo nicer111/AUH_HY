@@ -54,21 +54,12 @@ def generate_launch_description():
             )
         )
     )
-    nodemanage_launch = IncludeLaunchDescription(
-        launch_description_source= PythonLaunchDescriptionSource(
-            launch_file_path=os.path.join(
-                get_package_share_directory("nodemanage"),
-                "launch",
-                "nodemanage_launch.py"
-            )
-        )
-    )
-    bagrecorder_launch = IncludeLaunchDescription(
-        launch_description_source= PythonLaunchDescriptionSource(
-            launch_file_path=os.path.join(
-                get_package_share_directory("bagrecorder"),
-                "launch",
-                "bagrecorder_launch.py"
+    movecontroler_launch = IncludeLaunchDescription(
+        launch_description_source=AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('movecontroler'),
+                'launch',
+                'movecontroler_launch.py'
             )
         )
     )
@@ -108,6 +99,24 @@ def generate_launch_description():
             )
         )
     )
+    nodemanage_launch = IncludeLaunchDescription(
+        launch_description_source= PythonLaunchDescriptionSource(
+            launch_file_path=os.path.join(
+                get_package_share_directory("nodemanage"),
+                "launch",
+                "nodemanage_launch.py"
+            )
+        )
+    )
+    bagrecorder_launch = IncludeLaunchDescription(
+        launch_description_source= PythonLaunchDescriptionSource(
+            launch_file_path=os.path.join(
+                get_package_share_directory("bagrecorder"),
+                "launch",
+                "bagrecorder_launch.py"
+            )
+        )
+    )
     foxglove_bridge_launch = IncludeLaunchDescription(
         launch_description_source=AnyLaunchDescriptionSource(
             os.path.join(
@@ -117,4 +126,16 @@ def generate_launch_description():
             )
         )
     )
-    return LaunchDescription([lora_launch,va500p_launch,light_launch,battery_launch,usbcam_launch,foxglove_bridge_launch,oculus_launch,nodemanage_launch,bagrecorder_launch,navi_launch,tfbroadcaster_launch,controlmode_launch])
+    return LaunchDescription([lora_launch,
+                              va500p_launch,
+                              light_launch,
+                              battery_launch,
+                              usbcam_launch,
+                              movecontroler_launch,
+                              oculus_launch,
+                              navi_launch,
+                              tfbroadcaster_launch,
+                              controlmode_launch,
+                              nodemanage_launch,
+                              bagrecorder_launch,
+                              foxglove_bridge_launch])

@@ -11,7 +11,18 @@ void ControlmodeNode::handle_callback(const sensor_msgs::msg::Joy::SharedPtr msg
 {
     if(msg->header.frame_id == "keyborad")
     {
-        
+        if(msg->axes[0] == 1)
+            key.key_a = 1;
+        else if(msg->axes[0] == -1)
+            key.key_d = 1;
+        if(msg->axes[1] == 1)
+            key.key_w = 1;
+        else if(msg->axes[1] == -1)
+            key.key_s = 1;
+        key.key_k = msg->buttons.at(0);
+        key.key_l = msg->buttons.at(1);
+        key.key_j = msg->buttons.at(3);
+        key.key_i = msg->buttons.at(4);
     }
     //RCLCPP_INFO(this->get_logger(), "%s ",msg->header.frame_id.c_str());
     //RCLCPP_INFO(this->get_logger(), "%f %f",msg->axes[0],msg->axes[1]);

@@ -63,12 +63,12 @@ def generate_launch_description():
             )
         )
     )
-    nodemanage_launch = IncludeLaunchDescription(
-        launch_description_source= PythonLaunchDescriptionSource(
-            launch_file_path=os.path.join(
-                get_package_share_directory("nodemanage"),
-                "launch",
-                "nodemanage_launch.py"
+    movecontroler_launch = IncludeLaunchDescription(
+        launch_description_source=AnyLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('movecontroler'),
+                'launch',
+                'movecontroler_launch.py'
             )
         )
     )
@@ -108,5 +108,25 @@ def generate_launch_description():
             )
         )
     )
+    nodemanage_launch = IncludeLaunchDescription(
+        launch_description_source= PythonLaunchDescriptionSource(
+            launch_file_path=os.path.join(
+                get_package_share_directory("nodemanage"),
+                "launch",
+                "nodemanage_launch.py"
+            )
+        )
+    )
 
-    return LaunchDescription([lora_launch,va500p_launch,propeller_launch,light_launch,battery_launch,usbcam_launch,nodemanage_launch,navi_launch,tfbroadcaster_launch,controlmode_launch,bagrecorder_launch])
+    return LaunchDescription([lora_launch,
+                              va500p_launch,
+                              propeller_launch,
+                              light_launch,
+                              battery_launch,
+                              usbcam_launch,
+                              movecontroler_launch,
+                              navi_launch,
+                              tfbroadcaster_launch,
+                              controlmode_launch,
+                              bagrecorder_launch,
+                              nodemanage_launch])
