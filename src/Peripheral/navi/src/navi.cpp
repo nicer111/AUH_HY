@@ -93,6 +93,11 @@ void NaviNode::message_Deal(std::string & msg)
                 navidata_.vd = std::stof(v.at(11));
                 navidata_.dvlbaseline = std::stof(v.at(12));
                 navidata_.status = v.at(15).substr(0, 2);
+                navidata_.speed = std::sqrt(navidata_.vn * navidata_.vn + navidata_.ve * navidata_.ve + navidata_.vd * navidata_.vd);
+                if(navidata_.yaw < -180.0)
+                    navidata_.yaw += 360.0;
+                if(navidata_.yaw > 180.0)
+                    navidata_.yaw -= 360.0;
                 ghfpdpub_->publish(navidata_);
                 //std::string temp = v.at(15).substr(3, 5);
             } catch (const std::exception& e) {

@@ -36,6 +36,15 @@ def generate_launch_description():
             )
         )
     )
+    propeller_launch = IncludeLaunchDescription(
+        launch_description_source= PythonLaunchDescriptionSource(
+            launch_file_path=os.path.join(
+                get_package_share_directory("propeller"),
+                "launch",
+                "propeller_launch.py"
+            )
+        )
+    )
     battery_launch = IncludeLaunchDescription(
         launch_description_source= PythonLaunchDescriptionSource(
             launch_file_path=os.path.join(
@@ -129,6 +138,7 @@ def generate_launch_description():
     return LaunchDescription([lora_launch,
                               va500p_launch,
                               light_launch,
+                              propeller_launch,
                               battery_launch,
                               usbcam_launch,
                               movecontroler_launch,

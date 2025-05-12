@@ -12,10 +12,11 @@ public:
     ControlmodeNode();
 
 private:
-    MYKEY key;
+
     void handle_callback(const sensor_msgs::msg::Joy::SharedPtr msg);
 
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr handlesub_;
+    rclcpp::Publisher<MYKEY>::SharedPtr mykeypub_;
 };
 
 

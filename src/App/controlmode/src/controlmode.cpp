@@ -3,13 +3,15 @@
 ControlmodeNode::ControlmodeNode()
         : Node("controlmodenode")
 {
-    handlesub_ = this->create_subscription<sensor_msgs::msg::Joy>("/joy", 10,
+    handlesub_ = this->create_subscription<sensor_msgs::msg::Joy>("joy", 10,
                                        std::bind(&ControlmodeNode::handle_callback, this, _1));
+    mykeypub_ = this->create_publisher<MYKEY>("mykey", 10);
 }
 
 void ControlmodeNode::handle_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
-    if(msg->header.frame_id == "keyborad")
+    MYKEY key;
+    if(msg->header.frame_id == "keyboard")
     {
         if(msg->axes[0] == 1)
             key.key_a = 1;
@@ -23,11 +25,13 @@ void ControlmodeNode::handle_callback(const sensor_msgs::msg::Joy::SharedPtr msg
         key.key_l = msg->buttons.at(1);
         key.key_j = msg->buttons.at(3);
         key.key_i = msg->buttons.at(4);
+        key.key_space = msg->buttons.at(6);
+        mykeypub_->publish(key);
     }
-    //RCLCPP_INFO(this->get_logger(), "%s ",msg->header.frame_id.c_str());
-    //RCLCPP_INFO(this->get_logger(), "%f %f",msg->axes[0],msg->axes[1]);
-    //RCLCPP_INFO(this->get_logger(), "\r\n");
-    //RCLCPP_INFO(this->get_logger(), "%d \r\n%d \r\n%d \r\n%d",msg->buttons.at(0),msg->buttons.at(1),msg->buttons.at(3),msg->buttons.at(4));
+//    RCLCPP_INFO(this->get_logger(), "%s ",msg->header.frame_id.c_str());
+//    RCLCPP_INFO(this->get_logger(), "%f %f",msg->axes[0],msg->axes[1]);
+//    RCLCPP_INFO(this->get_logger(), "\r\n");
+//    RCLCPP_INFO(this->get_logger(), "%d \r\n%d \r\n%d \r\n%d",msg->buttons.at(0),msg->buttons.at(1),msg->buttons.at(3),msg->buttons.at(4));
 
 }
 

@@ -6,3 +6,4 @@ int32 key_i
 int32 key_j
 int32 key_k
 int32 key_l
+int32 key_space

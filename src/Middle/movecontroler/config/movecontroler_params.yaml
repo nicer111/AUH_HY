@@ -1,14 +1,14 @@
 AUH/movecontrolernode:
   ros__parameters:
-    frqv: 10
-    frql: 10
+    frqv: 100
+    frql: 100
     frqh: 50
     Depth_pid:
       p: 40.0    # 比例增益 Kp
       i: 40.0    # 积分增益 Ki
       d: 30.0   # 微分增益 Kd
-      i_max: 10.0  # 积分上限
-      i_min: -10.0 # 积分下限
+      i_max: 0.0  # 积分上限
+      i_min: 0.0 # 积分下限
       antiwindup: true  # 抗积分饱和功能
       save_i_term: true # 是否在 reset() 时保留积分项
     Height_pid:
@@ -23,32 +23,32 @@ AUH/movecontrolernode:
       p: -1.0    # 比例增益 Kp
       i: 0.0    # 积分增益 Ki
       d: -0.5   # 微分增益 Kd
-      i_max: 10.0  # 积分上限
-      i_min: -10.0 # 积分下限
+      i_max: 0.0  # 积分上限
+      i_min: 0.0 # 积分下限
       antiwindup: true  # 抗积分饱和功能
       save_i_term: true # 是否在 reset() 时保留积分项
     Pitch_pid:
       p: -0.9    # 比例增益 Kp
       i: 0.0    # 积分增益 Ki
       d: -0.5   # 微分增益 Kd
-      i_max: 10.0  # 积分上限
-      i_min: -10.0 # 积分下限
+      i_max: 0.0  # 积分上限
+      i_min: 0.0 # 积分下限
       antiwindup: true  # 抗积分饱和功能
       save_i_term: true # 是否在 reset() 时保留积分项
     Speed_pid:
       p: 200.0    # 比例增益 Kp
       i: 0.0    # 积分增益 Ki
       d: 0.1   # 微分增益 Kd
-      i_max: 10.0  # 积分上限
-      i_min: -10.0 # 积分下限
+      i_max: 0.0  # 积分上限
+      i_min: 0.0 # 积分下限
       antiwindup: true  # 抗积分饱和功能
       save_i_term: true # 是否在 reset() 时保留积分项
     Yaw_pid:
       p: 0.2    # 比例增益 Kp
       i: 0.5    # 积分增益 Ki
       d: 0.101   # 微分增益 Kd
-      i_max: 10.0  # 积分上限
-      i_min: -10.0 # 积分下限
+      i_max: 0.0  # 积分上限
+      i_min: 0.0 # 积分下限
       antiwindup: true  # 抗积分饱和功能
       save_i_term: true # 是否在 reset() 时保留积分项
 

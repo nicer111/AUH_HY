@@ -11,3 +11,5 @@ float32 ve
 float32 vd
 float32 dvlbaseline
 string  status
+float32 speed
+
